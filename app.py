@@ -1,13 +1,9 @@
-# Import the required packages
 from flask import Flask
+from router import recognize
 
-def create_app():
-    """Application-factory pattern"""
-    app = Flask(__name__)
-    return app
+app = Flask(__name__)
 
-app = create_app()
+app.add_url_rule('/recognize', 'recognize', recognize.index, methods=["POST"])
 
-@app.route('/', methods=["GET"])
-def hello():
-    return "Hello World"  
+if __name__ == "__main__":
+    app.run(debug=True)
