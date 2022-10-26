@@ -1,5 +1,8 @@
 import cv2
 import os
+from deepface import DeepFace
+import random 
+import matplotlib.pyplot as plt
 
 def index(vidPath):
     video = cv2.VideoCapture(vidPath)
@@ -15,7 +18,7 @@ def index(vidPath):
         faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         faces = faceCascade.detectMultiScale(
             gray,
-            scaleFactor=1.3,
+            scaleFactor=2,
             minNeighbors=3,
             minSize=(30, 30)
         )
@@ -23,5 +26,34 @@ def index(vidPath):
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             roi_color = frame[y:y + h, x:x + w]
+            cv2.imwrite('temp.jpg', roi_color)
+            
+            try:
+                is_a_face = DeepFace.detectFace("temp.jpg") #SHORTCOMING:::FRONTAL 
+                found_a_match = False
+                matched_path = ""
 
-            cv2.imwrite(os.path.join('./imfaces', str(w) + str(h) + '_faces.jpg'), roi_color)
+                # find if this face matches something in the database
+                for imface in os.scandir('./imfaces'):
+                    if imface.is_file():
+                        #deepface verify the face
+                        print(imface.path)
+                        try:
+                            result = DeepFace.verify(img1_path = imface.path, img2_path = "temp.jpg")
+                            print(result)
+                            if result["verified"] == True:
+                                print("found a match")
+                                found_a_match = True
+                                matched_path = imface.name
+                                break
+                        except:
+                            print("No face detected in this image")
+                
+                
+                if found_a_match == False:   
+                    # file_name = str(w) + str(h) + '_faces.jpg'
+                    file_name = str(random.random()) + '.jpg'
+                    cv2.imwrite(os.path.join('./imfaces', file_name), roi_color)
+                    
+            except:
+                print("This face is not a face")
