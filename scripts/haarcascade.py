@@ -3,8 +3,9 @@ import os
 from deepface import DeepFace
 import random 
 import matplotlib.pyplot as plt
+import uuid
 
-def index(vidPath):
+def index(vidPath, location):
     video = cv2.VideoCapture(vidPath)
     length = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     print(length)
@@ -51,9 +52,12 @@ def index(vidPath):
                 
                 
                 if found_a_match == False:   
-                    # file_name = str(w) + str(h) + '_faces.jpg'
-                    file_name = str(random.random()) + '.jpg'
+                    uniqueid = uuid.uuid1()
+                    file_name = str(uniqueid) + '.jpg'
                     cv2.imwrite(os.path.join('./imfaces', file_name), roi_color)
+                    # database mein create a new row with uuid and location
                     
+                else:
+                    # insert the "location" of cctv in the matched_path
             except:
                 print("This face is not a face")
