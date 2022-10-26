@@ -57,7 +57,7 @@ def index(vidPath, location):
                     cv2.imwrite(os.path.join('./imfaces', file_name), roi_color)
                     # database mein create a new row with uuid and location
                     
-                else:
+                # else:
                     # insert the "location" of cctv in the matched_path
             except:
                 print("This face is not a face")
