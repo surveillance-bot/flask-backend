@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <title>Upload Video</title>
+</head>
+<body>
+    Please select a file and then hit Evaluate:
+    <!-- <br/>
+    <br/>
+    <br/>
+    <h2>Title of video : </h2> 
+    <input type="text" name="title" id="">
+    
+    <br/>
+    <br/>
+    <br/>
+    
+    <br/>
+    <br/> -->
+    <div class="form">
+        <form action="#">
+            <input id="file" type="file"/>
+            <button id="button">Evaluate</button>
+        </form>
+    </div>
+<script>
+        document.getElementById('button').addEventListener('click', function() {
+        var files = document.getElementById('file').files;
+        if (files.length > 0) {
+             getBase64(files[0]);
+            }
+        });
+        var text;
+        function getBase64(file) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                text = reader.result; 
+                // console.log(text);  this is checked and we are getting base64 no issues here
+            };
+            reader.onerror = function (error) {
+            console.log('Error: ', error);
+            };
+            const data = { video : text};
+            // Access-Control-Allow-Origin: *
+            fetch('http://127.0.0.1:5000/recognize', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*' ,
+                    'Access-Control-Allow-Methods': 'POST',
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                    console.log("am i here?"),
+                    console.error('Error:', error);
+            });
+        }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
+</body>
+</html>
+<!-- <script>
+    const data = { title: "videoname" , base64string : "text "};
+
+    fetch('https://example.com/profile', {
+        method: 'POST', // or 'PUT'
+        
+        body: JSON.stringify(data),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
+</script> -->
