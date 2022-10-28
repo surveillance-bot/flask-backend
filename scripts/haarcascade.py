@@ -16,7 +16,7 @@ def index(vidPath, location):
             break
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
         faces = faceCascade.detectMultiScale(
             gray,
             scaleFactor=2,
@@ -30,7 +30,7 @@ def index(vidPath, location):
             cv2.imwrite('temp.jpg', roi_color)
             
             try:
-                is_a_face = DeepFace.detectFace("temp.jpg") #SHORTCOMING:::FRONTAL 
+                is_a_face = DeepFace.detectFace("temp.jpg") 
                 found_a_match = False
                 matched_path = ""
 
@@ -46,7 +46,7 @@ def index(vidPath, location):
                                 print("found a match")
                                 found_a_match = True
                                 matched_path = imface.name
-                                break
+                                
                         except:
                             print("No face detected in this image")
                 
