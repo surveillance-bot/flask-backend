@@ -15,7 +15,7 @@ document.getElementById('submit').addEventListener('click', function () {
         var text;
         reader.onload = function () {
             text = reader.result;
-            console.log(text);
+            document.getElementById("video").value = text
         };
         
         reader.onerror = function (error) {
