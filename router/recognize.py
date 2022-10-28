@@ -9,6 +9,7 @@ def index():
         # #accept the data from the request
         title = request.get_json()['title']
         location = request.get_json()['location']
+        time = request.get_json()['time']
         # b64 = request.get_json()['video']
         print(title, location)
         # #convert the base64 video to a file and save it locally
@@ -19,6 +20,6 @@ def index():
         # print("Video is saved in the local")
         
         # #run the face recognition algorithm on the video
-        haarcascade.index("final.mp4", location)
+        haarcascade.index("final.mp4", location, time)
         
     return "Broke the video into frames and saved the faces from each frames."
