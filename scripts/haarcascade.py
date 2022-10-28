@@ -4,28 +4,40 @@ from deepface import DeepFace
 import random 
 import matplotlib.pyplot as plt
 import uuid
+from datetime import date, datetime
+
 
 def index(vidPath, location):
+    count = 0 # 1 frame per second
+    jump = 0
+    p = 100 #padding
+    
     video = cv2.VideoCapture(vidPath)
     length = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     print(length)
+    
     while True:
         # Capture frame-by-frame
         ret, frame = video.read()
         if ret == False:
             break
+        
+        count += 10 
+        jump += 1
+        video.set(cv2.CAP_PROP_POS_FRAMES, count)
+
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
+        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         faces = faceCascade.detectMultiScale(
             gray,
             scaleFactor=2,
             minNeighbors=3,
-            minSize=(30, 30)
+            minSize=(20, 20)
         )
 
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(frame, (x - p, y - p), (x + w + p, y + h + p), (0, 255, 0), 2)
             roi_color = frame[y:y + h, x:x + w]
             cv2.imwrite('temp.jpg', roi_color)
             
@@ -38,26 +50,24 @@ def index(vidPath, location):
                 for imface in os.scandir('./imfaces'):
                     if imface.is_file():
                         #deepface verify the face
-                        print(imface.path)
                         try:
                             result = DeepFace.verify(img1_path = imface.path, img2_path = "temp.jpg")
-                            print(result)
                             if result["verified"] == True:
-                                print("found a match")
                                 found_a_match = True
                                 matched_path = imface.name
-                                
+
                         except:
                             print("No face detected in this image")
                 
                 
                 if found_a_match == False:   
+                    # database mein create a new row with uuid and location
                     uniqueid = uuid.uuid1()
                     file_name = str(uniqueid) + '.jpg'
                     cv2.imwrite(os.path.join('./imfaces', file_name), roi_color)
-                    # database mein create a new row with uuid and location
+                    print("Saving a new image with the id: ", uniqueid)
+                else:
+                    print("The matched face of this face is of path: ", matched_path)
                     
-                # else:
-                    # insert the "location" of cctv in the matched_path
             except:
                 print("This face is not a face")
