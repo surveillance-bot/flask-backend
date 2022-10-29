@@ -5,17 +5,22 @@ import os
 from reportlab.pdfgen import canvas
 import cv2
 import matplotlib.pyplot as plt
+import subprocess
 
 def create_report(id_new):
-    pdf_file = 'report(1).pdf' 
-    print(id_new)
+    pdf_file = 'suspect.pdf' 
+    print("id_new", id_new)
     can = canvas.Canvas(pdf_file)
     if id_new:    
         img_file = "C:/Users/daksh/Desktop/VSCode/SurveillanceBot/flask-backend/imfaces/" + id_new + '.jpg'
-        can.drawImage(img_file,20, 700, width=100)
+        can.drawImage(img_file, 20, 600, width=100)
+        can.drawString(20, 450, "The suspect was present at timestamps 5, 6, 6, 6 and 7")
     else:
         can.drawString(20, 700, "No matching face found in database.")
+        
     can.save()
+    subprocess.Popen(['suspect.pdf'],shell=True)
+
 
 def index():
     # b64 = request.get_json()["image"]
@@ -30,6 +35,8 @@ def index():
         is_a_face = DeepFace.detectFace("final.jpg")
         # find if this face matches something in the database
         for imface in os.scandir('./imfaces'):
+            print(imface.path)
+            
             try:
                 result = DeepFace.verify(img1_path = imface.path, img2_path = "final.jpg")
 
