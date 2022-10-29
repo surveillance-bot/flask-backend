@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import uuid
 from datetime import date, datetime
 from reportlab.pdfgen import canvas
- 
+import subprocess
+
 def create_report(location, date, dic):
     location = location 
     date = date
@@ -18,15 +19,17 @@ def create_report(location, date, dic):
     for i in range(0, len(dic)):
         img_file = "C:/Users/daksh/Desktop/VSCode/SurveillanceBot/flask-backend/imfaces/" + dic[i][0] + '.jpg'
         can.drawImage(img_file, 40, 500, width=100)
-        can.drawString(40, 300, "Number of occurences in the video: " + str(len(dic[i][1]//30)))
+        can.drawString(40, 300, "Number of occurences in the video: " + str(len(dic[i][1])))
         yt=""
         for j in range(0, len(dic[i][1])):
-            yt += str(dic[i][1][j]) + ", " 
+            yt += str(dic[i][1][j]//30) + ", " 
 
         can.drawString(40, 250, "Timestamps in the video is: " + yt)
         can.showPage()
 
     can.save()
+    subprocess.Popen(['report.pdf'],shell=True)
+
     
 def index(vidPath, location, time):
     count = 0 # 1 frame per second
