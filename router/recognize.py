@@ -2,7 +2,7 @@ from __future__ import print_function
 from flask import Flask, jsonify, request, render_template
 from scripts import haarcascade
 import base64 
-
+    
 def index():
     if request.method == "POST":
 
